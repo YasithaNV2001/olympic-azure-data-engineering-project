@@ -1,0 +1,91 @@
+{
+	"$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"type": "string",
+			"metadata": "Data Factory name",
+			"defaultValue": "tokyo-olympic25-df"
+		},
+		"AzureDataLakeStorage1_accountKey": {
+			"type": "secureString",
+			"metadata": "Secure string for 'accountKey' of 'AzureDataLakeStorage1'"
+		},
+		"AzureDataLakeStorage1_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://tokyoolympicdata25.dfs.core.windows.net/"
+		},
+		"CoachesHttp_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://raw.githubusercontent.com/YasithaNV2001/olympic-azure-data-engineering-project/main/data/Coaches.csv"
+		},
+		"HttpEntriesGender_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://raw.githubusercontent.com/YasithaNV2001/olympic-azure-data-engineering-project/main/data/EntriesGender.csv"
+		},
+		"HttpMedals_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://raw.githubusercontent.com/YasithaNV2001/olympic-azure-data-engineering-project/main/data/Medals.csv"
+		},
+		"HttpTeams_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://raw.githubusercontent.com/YasithaNV2001/olympic-azure-data-engineering-project/main/data/Teams.csv"
+		},
+		"athletesHTTP_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://raw.githubusercontent.com/YasithaNV2001/olympic-azure-data-engineering-project/main/data/Athletes.csv"
+		},
+		"containerUri": {
+			"type": "string",
+			"metadata": "URI to storage account containing linked ARM templates"
+		},
+		"containerSasToken": {
+			"type": "string",
+			"metadata": "Sas token to storage account containing linked ARM templates"
+		}
+	},
+	"variables": {
+		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
+	},
+	"resources": [
+		{
+			"name": "tokyo-olympic25-df_ArmTemplate_0",
+			"type": "Microsoft.Resources/deployments",
+			"apiVersion": "2024-03-01",
+			"properties": {
+				"mode": "incremental",
+				"templateLink": {
+					"uri": "[concat(parameters('containerUri'), '/ArmTemplate_0.json', parameters('containerSasToken'))]",
+					"contentVersion": "1.0.0.0"
+				},
+				"parameters": {
+					"factoryName": {
+						"value": "[parameters('factoryName')]"
+					},
+					"AzureDataLakeStorage1_accountKey": {
+						"value": "[parameters('AzureDataLakeStorage1_accountKey')]"
+					},
+					"AzureDataLakeStorage1_properties_typeProperties_url": {
+						"value": "[parameters('AzureDataLakeStorage1_properties_typeProperties_url')]"
+					},
+					"CoachesHttp_properties_typeProperties_url": {
+						"value": "[parameters('CoachesHttp_properties_typeProperties_url')]"
+					},
+					"HttpEntriesGender_properties_typeProperties_url": {
+						"value": "[parameters('HttpEntriesGender_properties_typeProperties_url')]"
+					},
+					"HttpMedals_properties_typeProperties_url": {
+						"value": "[parameters('HttpMedals_properties_typeProperties_url')]"
+					},
+					"HttpTeams_properties_typeProperties_url": {
+						"value": "[parameters('HttpTeams_properties_typeProperties_url')]"
+					},
+					"athletesHTTP_properties_typeProperties_url": {
+						"value": "[parameters('athletesHTTP_properties_typeProperties_url')]"
+					}
+				}
+			},
+			"dependsOn": []
+		}
+	]
+}
