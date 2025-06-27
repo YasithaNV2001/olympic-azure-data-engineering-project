@@ -6,9 +6,7 @@ This project demonstrates a modern **end-to-end Data Engineering pipeline** buil
 
 ## 🏗️ Architecture
 
-```mermaid
-<img width="638" alt="project" src="https://github.com/user-attachments/assets/571d3641-8262-428e-87b6-9af5de2fab76" />
-```
+![Data Engineering Architecture](assets/architecture.png)
 
 
 ## 🛠️ Tech Stack
