@@ -6,7 +6,7 @@ This project demonstrates a modern **end-to-end Data Engineering pipeline** buil
 
 ## 🏗️ Architecture
 
-![Data Engineering Architecture](assets/architecture.png)
+![Data Engineering Architecture](project.png)
 
 
 ## 🛠️ Tech Stack
