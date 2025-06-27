@@ -7,14 +7,9 @@ This project demonstrates a modern **end-to-end Data Engineering pipeline** buil
 ## 🏗️ Architecture
 
 ```mermaid
-graph TD
-    A[Raw Dataset (CSV)] --> B[Azure Data Factory]
-    B --> C[Azure Data Lake Gen2 (Raw Zone)]
-    C --> D[Azure Databricks (PySpark)]
-    D --> E[Azure Data Lake Gen2 (Processed Zone)]
-    E --> F[Azure Synapse Analytics]
-    F --> G[Power BI Dashboard]
+<img width="638" alt="project" src="https://github.com/user-attachments/assets/571d3641-8262-428e-87b6-9af5de2fab76" />
 ```
+
 
 ## 🛠️ Tech Stack
 
