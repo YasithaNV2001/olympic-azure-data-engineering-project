@@ -1,92 +1,65 @@
-# 🏅 Olympic Azure Data Engineering Project
+# 🏅 Tokyo Olympics Data Pipeline on Azure
 
-This project demonstrates a modern **end-to-end Data Engineering pipeline** built on **Azure Cloud** using the Tokyo 2020 Olympics dataset. It showcases real-world data ingestion, transformation, and analytics using industry-standard tools like **Azure Data Factory**, **Databricks**, **Azure Data Lake Storage Gen2**, and **Azure Synapse Analytics**.
+An end-to-end data pipeline on Microsoft Azure: it **collects** five Tokyo 2020 Olympics datasets, **stores** them in a data lake, **transforms** them with PySpark, and makes them **queryable with SQL**.
 
----
+![Pipeline architecture](project.png)
 
-## 🏗️ Architecture
+## What it does, step by step
 
-![Data Engineering Architecture](project.png)
+| Step | Azure service | What happens |
+|---|---|---|
+| **1. Ingest** | Azure Data Factory | The `raw_data_ingestion` pipeline runs 5 copy activities that download the CSV files from this repo (over HTTP) into the **raw-data** folder of the data lake |
+| **2. Store** | Azure Data Lake Storage Gen2 | Raw and transformed data are kept in **separate folders**, so the original data is never overwritten |
+| **3. Transform** | Azure Databricks (PySpark) | The notebook loads the 5 tables, fixes column types (e.g. gender entry counts to integers), runs two analyses, and writes the results to the **transformed-data** folder |
+| **4. Query** | Azure Synapse Analytics | A lake database (`TokyoOlympicDB`) exposes the transformed files as SQL tables |
 
+**The analyses in the notebook**
+- Countries ranked by gold medals
+- Share of female and male entries in each sport (discipline)
 
-## 🛠️ Tech Stack
+## The data
 
-Service / Tool	Purpose
-Azure Data Factory	Ingest data into ADLS Gen2
-Azure Data Lake Gen2	Store raw & processed datasets
-Azure Databricks	Clean, transform, and process data
-PySpark	Transformation logic in notebooks
-Azure Synapse	SQL-based analytics on transformed data
-Power BI	Optional dashboard visualizations
+| File | Rows | Contains |
+|---|---|---|
+| `Athletes.csv` | 11,085 | Athlete name, country, sport |
+| `Coaches.csv` | 394 | Coach name, country, sport, event |
+| `Teams.csv` | 743 | Team name, sport, country, event |
+| `EntriesGender.csv` | 46 | Female, male and total entries per sport |
+| `Medals.csv` | 93 | Gold, silver, bronze and total medals per country |
 
-## 📂 Folder Structure
-olympic-azure-data-engineering-project/
-│
-├── data/                          # Sample datasets
-│   └── tokyo_olympics_2020.csv
-│
-├── notebooks/                    # Databricks notebooks
-│   └── data_transformation.ipynb
-│
-├── adf_pipeline/                # Data Factory pipeline export (JSON)
-│   └── olympic_ingestion_pipeline.json
-│
-├── powerbi/                     # Power BI report file (if available)
-│   └── olympic_dashboard.pbix
-│
-├── synapse_queries/            # SQL scripts for Synapse Analytics
-│   └── queries.sql
-│
-└── README.md
+## What's in this repo
 
-## 🔄 Pipeline Overview
+| Folder | What it is |
+|---|---|
+| `data/` | The 5 source CSV files (the pipeline downloads them from here) |
+| `pipeline/` | The Data Factory ingestion pipeline (`raw_data_ingestion.json`) |
+| `dataset/`, `linkedService/`, `integrationRuntime/`, `factory/` | Data Factory datasets and connections, saved through its Git integration |
+| `tokyo-olympic25-df/` | ARM templates to re-create the Data Factory in another Azure account |
+| `databricks/` | The PySpark transformation notebook |
+| `database/`, `sqlscript/` | The Synapse lake database tables and a SQL script |
+| `project.png` | The architecture diagram |
 
-1. Data Ingestion with Azure Data Factory
-Ingests raw Olympic dataset from local or web source
+## Skills shown
 
-Loads into ADLS Gen2 → /raw/olympics_2020/
+Azure Data Factory · Azure Data Lake Storage Gen2 · Azure Databricks · PySpark · Azure Synapse Analytics · ETL pipelines · ARM templates · Git-based deployment
 
-2. Data Transformation using Azure Databricks
-Reads raw data using PySpark
+## How to run it
 
-Cleans nulls, formats columns, derives insights
+You need an Azure subscription with Data Factory, a Data Lake Storage Gen2 account, Databricks and Synapse.
 
-Writes cleaned data to /processed/olympics_2020/
+1. Create a storage account with a container, and `raw-data` / `transformed-data` folders.
+2. Deploy the Data Factory from the ARM templates in `tokyo-olympic25-df/` (you'll be asked for your storage details), then run the `raw_data_ingestion` pipeline.
+3. Import `databricks/Tokyo Olympic Transformation.ipynb` into Databricks. Store your app's client secret in a **Databricks secret scope** (never in the notebook), update the storage names, and run it.
+4. In Synapse, create the lake database tables over the `transformed-data` folder and query them with SQL.
 
-3. Analytics with Azure Synapse
-Connects to Processed Zone via SQL-on-demand or linked service
+## What I'd improve next
 
-Performs queries to extract country-wise stats, medal rankings, sport trends, etc.
+- Proper cleaning: missing values, duplicates and text formatting
+- Save as Parquet or Delta tables instead of single CSV files
+- One parameterised copy activity (ForEach) instead of five, plus a schedule trigger
+- Real SQL analysis in Synapse, and a Power BI dashboard on top
+- Data quality checks after each step
 
-4. (Optional) Dashboard with Power BI
-Connects to Synapse tables
+## Author
 
-Visualizes medals by country, athletes’ performance, sport-wise trends, etc.
-
-## 🚀 How to Run
-
-Prerequisites
-Azure Subscription
-
-Permissions to use Data Factory, Data Lake Gen2, Databricks, Synapse
-
-Python (for local PySpark testing, optional)
-
-Power BI Desktop (optional)
-
-Steps
-Clone this repo
-```bash
-git clone https://github.com/YasithaNV2001/olympic-azure-data-engineering-project.git
-```
-
-Import olympic_ingestion_pipeline.json into Azure Data Factory
-
-Upload tokyo_olympics_2020.csv to ADLS Gen2 /raw/ container
-
-Run the notebook data_transformation.ipynb in Azure Databricks
-
-Connect Synapse to ADLS Processed Zone and run queries.sql
-
-(Optional) Open olympic_dashboard.pbix in Power BI Desktop
-
+**Yasitha Priyashan** · Master of Data Science & AI, University of Moratuwa · [GitHub](https://github.com/YasithaNV2001)
